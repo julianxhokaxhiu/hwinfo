@@ -17,3 +17,16 @@ add_executable(system_info system_infoMain.cpp)
 target_link_libraries(system_info PRIVATE lfreist-hwinfo::hwinfo fmt::fmt)
 
 install(TARGETS system_info)
+
+target_compile_options(
+  system_info
+  PRIVATE /D_CRT_SECURE_NO_WARNINGS
+  PRIVATE /DNOMINMAX
+  PRIVATE /Zc:strictStrings-
+  PRIVATE /Zc:__cplusplus
+  PRIVATE /Qpar
+  PRIVATE /MP
+)
+target_compile_features(system_info
+  PRIVATE cxx_std_20
+)
