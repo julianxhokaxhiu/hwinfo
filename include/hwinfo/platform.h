@@ -32,10 +32,14 @@
 
 // dll exports/imports for windows shared libraries
 #ifdef _WIN32
+#if HWINFO_SHARED_BUILD
 #ifdef HWINFO_EXPORTS
 #define HWINFO_API __declspec(dllexport)
 #else
 #define HWINFO_API __declspec(dllimport)
+#endif
+#else
+#define HWINFO_API
 #endif
 #pragma warning(disable : 4251)
 #else

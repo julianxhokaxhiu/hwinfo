@@ -1,4 +1,21 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.25)
+cmake_policy(SET CMP0091 NEW)
+
+if(NOT DEFINED CMAKE_BUILD_TYPE)
+  message(FATAL_ERROR "CMAKE_BUILD_TYPE must be set to continue building with cmake. \nExample: Add -DCMAKE_BUILD_TYPE=Release to your cmake command line.")
+endif()
+
+set(CMAKE_SHARED_LINKER_FLAGS
+  "${CMAKE_SHARED_LINKER_FLAGS} /NODEFAULTLIB:MSVCRT /NODEFAULTLIB:MSVCRTD /DEBUG:FULL /FORCE:MULTIPLE /IGNORE:4006,4075,4099,4217"
+)
+
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+  set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDebug")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT")
+else()
+  set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /NODEFAULTLIB:LIBCMTD")
+endif()
 
 project(hwinfo VERSION 1.0.0 LANGUAGES CXX)
 
@@ -26,8 +43,8 @@ include(GNUInstallDirs)
 
 string(COMPARE EQUAL "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}" PROJECT_IS_TOP_LEVEL)
 
-option(HWINFO_SHARED "Shared build" ON)
-option(HWINFO_STATIC "Static build" OFF)
+option(HWINFO_SHARED "Shared build" OFF)
+option(HWINFO_STATIC "Static build" ON)
 
 
 option(BUILD_EXAMPLES "Build example program" ${PROJECT_IS_TOP_LEVEL})
@@ -46,8 +63,10 @@ option(HWINFO_NETWORK "Enable network information" ON)
 
 if(NOT HWINFO_STATIC AND HWINFO_SHARED)
   set(HWINFO_BUILD SHARED)
+  set(HWINFO_SHARED_BUILD ON)
 else(HWINFO_STATIC)
   set(HWINFO_BUILD STATIC)
+  set(HWINFO_SHARED_BUILD OFF)
 endif()
 
 add_subdirectory(data)
