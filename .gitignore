@@ -1,5 +1,4 @@
-/**/.vscode/**
-/**/build/**
+/**/.build/**
 /.vs
 /CMakeSettings.json
 /.cache/
