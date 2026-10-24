@@ -103,7 +103,7 @@ Every component is a plain aggregate returned by a free function:
 | `hwinfo::computer()`           | `result<Computer>` (vendor, model, chassis, boot time)       | `hwinfo/computer.h`        |
 | `hwinfo::uptime()`             | `result<std::chrono::seconds>` (including time asleep)       | `hwinfo/computer.h`        |
 | `hwinfo::cpus()`               | `result<std::vector<Cpu>>` (one per socket)                  | `hwinfo/cpu.h`             |
-| `hwinfo::memory()`             | `result<Memory>` (total + installed modules)                 | `hwinfo/ram.h`             |
+| `hwinfo::memory()`             | `result<Memory>` (total, free/available RAM + installed modules) | `hwinfo/ram.h`             |
 | `hwinfo::gpus()`               | `result<std::vector<Gpu>>`                                   | `hwinfo/gpu.h`             |
 | `hwinfo::disks()`              | `result<std::vector<Disk>>`                                  | `hwinfo/disk.h`            |
 | `hwinfo::os()`                 | `result<Os>`                                                 | `hwinfo/os.h`              |

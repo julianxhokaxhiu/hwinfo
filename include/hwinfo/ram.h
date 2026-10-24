@@ -46,11 +46,13 @@ struct Memory {
   std::vector<MemoryModule> modules{};   // installed modules; empty if module information is not available
   std::optional<std::uint32_t> slots{};  // module positions on the board, including empty and soldered ones
   std::optional<Bytes> max_capacity{};   // maximum the board / memory controller supports
+  Bytes free{};                          // memory not used at all
+  Bytes available{};                     // available for new allocations without swapping; includes reclaimable caches
 
   friend bool operator==(const Memory&, const Memory&) = default;
 };
 
-// Physical memory of the system. See hwinfo/monitoring.h for free and available memory.
+// Physical memory of the system and its current free and available amounts.
 [[nodiscard]] HWINFO_API result<Memory> memory();
 
 constexpr std::string_view to_string(MemoryFormFactor form_factor) noexcept {

@@ -5,21 +5,21 @@
 
 #ifdef HWINFO_APPLE
 
+#include <hwinfo/monitoring.h>
 #include <hwinfo/ram.h>
 
-#include <cstdint>
-
 #include "internal/smbios.h"
-#include "internal/sysctl.h"
 
 namespace hwinfo {
 
 result<Memory> memory() {
-  return internal::sysctl_value<std::uint64_t>("hw.memsize").transform([](std::uint64_t total) {
+  return memory_usage().transform([](const MemoryUsage& usage) {
     // Modules and slots from SMBIOS on Intel Macs. Apple Silicon has no SMBIOS (memory is part of the SoC package).
     const auto& table = internal::system_table();
     Memory memory = table ? internal::memory_info(*table) : Memory{};
-    memory.total = Bytes{total};
+    memory.total = usage.total;
+    memory.free = usage.free;
+    memory.available = usage.available;
     return memory;
   });
 }

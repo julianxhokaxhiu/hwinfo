@@ -112,6 +112,8 @@ TEST(Smoke, Memory) {
   const auto memory = hwinfo::memory();
   ASSERT_TRUE(memory) << memory.error().message();
   EXPECT_GT(memory->total.value, 0u);
+  EXPECT_LE(memory->free, memory->total);
+  EXPECT_LE(memory->available, memory->total);
 
   const auto usage = hwinfo::memory_usage();
   ASSERT_TRUE(usage) << usage.error().message();

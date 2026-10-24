@@ -5,14 +5,13 @@
 
 #ifdef HWINFO_WINDOWS
 
+#include <hwinfo/monitoring.h>
 #include <hwinfo/ram.h>
-#include <windows.h>
 
 #include <cstdint>
 #include <vector>
 
 #include "internal/smbios.h"
-#include "internal/windows_error.h"
 #include "internal/wmi_wrapper.h"
 
 namespace hwinfo {
@@ -90,16 +89,15 @@ Memory memory_from_wmi() {
 }  // namespace
 
 result<Memory> memory() {
-  MEMORYSTATUSEX status{};
-  status.dwLength = sizeof(status);
-  if (!GlobalMemoryStatusEx(&status)) {
-    return std::unexpected(internal::last_error("GlobalMemoryStatusEx"));
-  }
-  // GetSystemFirmwareTable needs no administrator rights; WMI only if it fails
-  const auto& table = internal::system_table();
-  Memory memory = table ? internal::memory_info(*table) : memory_from_wmi();
-  memory.total = Bytes{status.ullTotalPhys};
-  return memory;
+  return memory_usage().transform([](const MemoryUsage& usage) {
+    // GetSystemFirmwareTable needs no administrator rights; WMI only if it fails
+    const auto& table = internal::system_table();
+    Memory memory = table ? internal::memory_info(*table) : memory_from_wmi();
+    memory.total = usage.total;
+    memory.free = usage.free;
+    memory.available = usage.available;
+    return memory;
+  });
 }
 
 }  // namespace hwinfo

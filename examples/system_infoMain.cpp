@@ -153,6 +153,8 @@ int main() {
   section("Memory");
   if (const auto memory = hwinfo::memory(); check(memory)) {
     field("total:", memory->total);
+    field("free:", memory->free);
+    field("available:", memory->available);
     field("slots:", memory->slots);
     field("max capacity:", memory->max_capacity);
     for (const auto& module : memory->modules) {
